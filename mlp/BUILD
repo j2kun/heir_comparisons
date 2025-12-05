@@ -23,6 +23,7 @@ py_binary(
 py_binary(
     name = "convert_to_mlir",
     srcs = ["convert_to_mlir.py"],
+    data = ["mnist_mlp_model.pth"],
     deps = [
         ":mlp",
         requirement("torch"),
