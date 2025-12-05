@@ -1,11 +1,12 @@
 import torch
 import torch_mlir
+import torch_mlir.fx
 from mlp.mlp import CanonicalMLP
 
 
 def main():
     model = CanonicalMLP()
-    model.load_state_dict(torch.load("mnist_mlp_model.pth"))
+    model.load_state_dict(torch.load("mlp/mnist_mlp_model.pth"))
 
     # Evaluation Mode excludes dropout from the exported model
     model.eval()
@@ -16,14 +17,15 @@ def main():
 
     # 'output_type' usually defaults to "linalg_on_tensors" which is
     # the standard entry point for lowering to HEIR.
-    module = torch_mlir.compile(
-        model, example_input, output_type=torch_mlir.OutputType.LINALG_ON_TENSORS
+    module = torch_mlir.fx.export_and_import(
+        model, example_input, output_type=torch_mlir.fx.OutputType.LINALG_ON_TENSORS
     )
 
     mlir_str = module.operation.get_asm(large_elements_limit=10)
-    with open("mnist_mlp.mlir", "w") as f:
+    filename = "mlp/mnist_mlp.mlir"
+    with open(filename, "w") as f:
         f.write(mlir_str)
-    print("Successfully converted model to 'mlp.mlir'")
+    print(f"Successfully converted model to '{filename}'")
 
 
 if __name__ == "__main__":
