@@ -10,8 +10,9 @@ common --enable_bzlmod
 # use opt by default for performance evaluations
 common -c opt
 
-# evaluations don't need CGGI
-common --//:enable_yosys=0
+# evaluations don't need CGGI, and need OpenMP
+common --@heir//:enable_yosys=0
+common --@heir//:enable_openmp=1
 
 # prevents changes to PATH from causing a full rebuild
 common --incompatible_strict_action_env

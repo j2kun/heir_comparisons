@@ -5,3 +5,28 @@ local_path_override(
     module_name = "heir",
     path = "../heir",
 )
+
+bazel_dep(name = "rules_python", version = "1.5.1")
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+
+python.toolchain(python_version = "3.11")
+
+pip.parse(
+    extra_pip_args = [
+        "--pre",
+        "--extra-index-url",
+        "https://download.pytorch.org/whl/nightly/cpu",
+        "-f",
+        "https://llvm.github.io/torch-mlir/package-index/",
+    ],
+    hub_name = "hc_pypi",
+    python_version = "3.11",
+    requirements_lock = "//:requirements.txt",
+)
+
+use_repo(python, python_3_11 = "python_3_11")
+
+use_repo(pip, "hc_pypi")
