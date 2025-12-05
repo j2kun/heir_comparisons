@@ -1,0 +1,44 @@
+# bazel output directories
+bazel-bin
+bazel-heir
+bazel-out
+bazel-testlogs
+
+# default cmake output directory
+build
+
+# Generated files by hugo
+docs/public/
+docs/resources/
+docs/assets/jsconfig.json
+docs/node_modules/
+.hugo_build.lock
+hugo_stats.json
+
+# python
+venv
+**/dist/
+*.egg-info
+wheelhouse
+.python-version
+
+# heir_play
+scripts/jupyter/.ipynb_checkpoints/
+scripts/jupyter/heir-opt
+scripts/jupyter/heir-translate
+scripts/jupyter/abc
+scripts/jupyter/techmap.v
+
+# for rust codegen tests
+**/Cargo.lock
+tests/**/**/target/
+tests/Examples/tfhe_rust_bool/fpga/tfhe-rs
+
+# vscode
+.vscode/**
+
+# for python files
+__pycache__
+
+# lockfile is updated by automation
+MODULE.bazel.lock
