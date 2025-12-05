@@ -1,0 +1,7 @@
+module(name = "heir_comparisons")
+
+bazel_dep(name = "heir")
+local_path_override(
+    module_name = "heir",
+    path = "../heir",
+)

@@ -4,6 +4,8 @@ bazel-heir
 bazel-out
 bazel-testlogs
 
+**/data/MNIST
+
 # default cmake output directory
 build
 
