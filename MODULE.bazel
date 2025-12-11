@@ -1,18 +1,29 @@
 module(name = "heir_comparisons")
 
-bazel_dep(name = "heir")
+bazel_dep(name = "rules_heir", version = "0.0.1")
 local_path_override(
-    module_name = "heir",
-    path = "../heir",
+    module_name = "rules_heir",
+    path = "../rules_heir",
 )
 
-bazel_dep(name = "rules_python", version = "1.5.1")
+bazel_dep(name = "rules_cc", version = "0.2.14")
+bazel_dep(name = "rules_python", version = "1.7.0")
+bazel_dep(name = "rules_go", version = "0.59.0")
+bazel_dep(name = "gazelle", version = "0.47.0")
+bazel_dep(name = "googletest", version = "1.17.0")
 
+# openfhe deps
+bazel_dep(name = "rapidjson", version = "1.1.0.bcr.20250205")
+
+# Hermetic python setup
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 
 python.toolchain(python_version = "3.11")
+
+# or-tools requires python3.13
+python.toolchain(python_version = "3.13")
 
 pip.parse(
     extra_pip_args = [
@@ -30,3 +41,22 @@ pip.parse(
 use_repo(python, python_3_11 = "python_3_11")
 
 use_repo(pip, "hc_pypi")
+
+# Go setup
+go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
+
+# Bazel ignores go.mod for the purpose of selecting a go version. To see which
+# go version will be used, run:
+#
+#   bazel run @rules_go//go -- version
+#
+go_sdk.download(version = "1.24.2")
+
+go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
+go_deps.from_file(go_mod = "//:go.mod")
+
+# All *direct* Go dependencies of the module have to be listed explicitly.
+use_repo(
+    go_deps,
+    "com_github_tuneinsight_lattigo_v6",
+)

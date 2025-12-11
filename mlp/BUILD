@@ -1,7 +1,9 @@
 load("@hc_pypi//:requirements.bzl", "requirement")
+load("@rules_go//go:def.bzl", "go_test")
 load("@rules_python//python:py_binary.bzl", "py_binary")
 load("@rules_python//python:py_library.bzl", "py_library")
 
+# model specification
 py_library(
     name = "mlp",
     srcs = ["mlp.py"],

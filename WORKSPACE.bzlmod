@@ -1,0 +1,18 @@
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+
+# OpenFHE backend and dependencies
+git_repository(
+    name = "cereal",
+    build_file = "//bazel/openfhe:cereal.BUILD",
+    commit = "ebef1e929807629befafbb2918ea1a08c7194554",
+    remote = "https://github.com/USCiLab/cereal.git",
+)
+
+git_repository(
+    name = "openfhe",
+    build_file = "//bazel/openfhe:openfhe.BUILD",
+    # Currently v1.4 2025-08-18
+    commit = "aa8a86e1143f1e47d4354bdd757080e903ba5875",
+    patches = ["@heir_comparisons//bazel/openfhe:add_config_core.patch"],
+    remote = "https://github.com/openfheorg/openfhe-development.git",
+)
