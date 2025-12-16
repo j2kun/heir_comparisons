@@ -82,7 +82,7 @@ def main():
         print(f"\nEnd of Epoch {epoch+1}: Test Accuracy: {accuracy:.2f}%\n")
 
     # 7. Emit (Save) the Trained Network
-    save_path = "mnist_mlp_model.pth"
+    save_path = "mlp_model.pth"
     torch.save(model.state_dict(), save_path)
     print(f"Model state dictionary saved to {save_path}")
 

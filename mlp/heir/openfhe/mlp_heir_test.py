@@ -5,10 +5,10 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 import absl.testing.absltest
-import tests.Examples.openfhe.ckks.mnist.mnist_openfhe_pybind as mnist
+import mlp.heir.openfhe.mlp_pybind as mlp
 
-MODEL_PATH = "tests/Examples/openfhe/ckks/mnist/data/traced_model.pt"
-DATA_PATH = "tests/Examples/openfhe/ckks/mnist/data"
+MODEL_PATH = "mlp/mlp_model.pth"
+DATA_PATH = "mlp/data"
 
 
 class CustomMNISTTestDataset(Dataset):
@@ -88,11 +88,11 @@ class MNISTTest(absl.testing.absltest.TestCase):
         shuffle=False,  # SequentialSampler equivalent
     )
 
-    crypto_context = mnist.mnist__generate_crypto_context()
+    crypto_context = mlp.mnist__generate_crypto_context()
     key_pair = crypto_context.KeyGen()
     public_key = key_pair.publicKey
     secret_key = key_pair.secretKey
-    crypto_context = mnist.mnist__configure_crypto_context(
+    crypto_context = mlp.mnist__configure_crypto_context(
         crypto_context, secret_key
     )
 
@@ -107,12 +107,12 @@ class MNISTTest(absl.testing.absltest.TestCase):
 
       input_tensor = batch_data.contiguous()  # (1, 1, 28, 28)
       input_vector = input_tensor.flatten().tolist()
-      input_encrypted = mnist.mnist__encrypt__arg4(
+      input_encrypted = mlp.mnist__encrypt__arg4(
           crypto_context, input_vector, public_key
       )
 
       start_time = time.time()
-      output_encrypted = mnist.mnist(
+      output_encrypted = mlp.mnist(
           crypto_context, *weights[0:4], input_encrypted
       )
       end_time = time.time()
@@ -121,7 +121,7 @@ class MNISTTest(absl.testing.absltest.TestCase):
       print(f"CPU time used: {time_elapsed_ms:.2f} ms")
 
       output = [0.0] * 10
-      output = mnist.mnist__decrypt__result0(
+      output = mlp.mnist__decrypt__result0(
           crypto_context, output_encrypted, secret_key
       )
       label = batch_target.item()
@@ -141,3 +141,4 @@ class MNISTTest(absl.testing.absltest.TestCase):
 
 if __name__ == "__main__":
   absl.testing.absltest.main()
+

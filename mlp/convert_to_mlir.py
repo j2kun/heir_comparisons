@@ -6,7 +6,7 @@ from mlp.mlp import CanonicalMLP
 
 def main():
     model = CanonicalMLP()
-    model.load_state_dict(torch.load("mlp/mnist_mlp_model.pth"))
+    model.load_state_dict(torch.load("mlp/mlp_model.pth"))
 
     # Evaluation Mode excludes dropout from the exported model
     model.eval()
@@ -22,7 +22,7 @@ def main():
     )
 
     mlir_str = module.operation.get_asm(large_elements_limit=10)
-    filename = "mlp/mnist_mlp.mlir"
+    filename = "mlp/mlp.mlir"
     with open(filename, "w") as f:
         f.write(mlir_str)
     print(f"Successfully converted model to '{filename}'")
