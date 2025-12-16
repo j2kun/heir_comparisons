@@ -6,11 +6,24 @@ local_path_override(
     path = "../rules_heir",
 )
 
-bazel_dep(name = "rules_cc", version = "0.2.14")
-bazel_dep(name = "rules_python", version = "1.7.0")
-bazel_dep(name = "rules_go", version = "0.59.0")
+ext = use_extension("@rules_heir//heir:extensions.bzl", "local_heir_repositories")
+
+# path to the directory containing heir-opt and heir-translate
+ext.config(path = "/home/jeremy/fhe/heir/bazel-bin/tools")
+use_repo(ext, "heir_local")
+
+register_toolchains(
+    "@heir_local//:heir_local_toolchain",
+)
+
+bazel_dep(name = "abseil-py", version = "2.1.0")
 bazel_dep(name = "gazelle", version = "0.47.0")
 bazel_dep(name = "googletest", version = "1.17.0")
+bazel_dep(name = "platforms", version = "1.0.0")
+bazel_dep(name = "pybind11_bazel", version = "2.13.6")
+bazel_dep(name = "rules_cc", version = "0.2.14")
+bazel_dep(name = "rules_go", version = "0.59.0")
+bazel_dep(name = "rules_python", version = "1.7.0")
 
 # openfhe deps
 bazel_dep(name = "rapidjson", version = "1.1.0.bcr.20250205")
