@@ -21,6 +21,7 @@ maybe(
         "https://github.com/facebook/zstd/releases/download/v1.5.2/zstd-1.5.2.tar.gz",
     ],
 )
+
 maybe(
     http_archive,
     name = "llvm_zlib",
@@ -30,15 +31,6 @@ maybe(
     urls = [
         "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.0.7.zip",
     ],
-)
-
-
-# OpenFHE backend and dependencies
-git_repository(
-    name = "cereal",
-    build_file = "//bazel/openfhe:cereal.BUILD",
-    commit = "ebef1e929807629befafbb2918ea1a08c7194554",
-    remote = "https://github.com/USCiLab/cereal.git",
 )
 
 git_repository(
