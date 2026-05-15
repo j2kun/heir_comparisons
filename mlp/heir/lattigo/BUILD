@@ -9,7 +9,7 @@ heir_lattigo_lib(
         "--torch-linalg-to-ckks=ciphertext-degree=8192",
         "--scheme-to-lattigo",
     ],
-    mlir_src = "//mlp:mlp.mlir",
+    mlir_src = "mlp.mlir",
 )
 
 go_test(
