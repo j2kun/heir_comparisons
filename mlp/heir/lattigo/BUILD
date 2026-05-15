@@ -1,5 +1,5 @@
-load("@rules_heir//heir:lattigo.bzl", "heir_lattigo_lib")
 load("@rules_go//go:def.bzl", "go_test")
+load("@rules_heir//heir:lattigo.bzl", "heir_lattigo_lib")
 
 heir_lattigo_lib(
     name = "mlp",
