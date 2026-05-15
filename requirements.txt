@@ -1,14 +1,5 @@
-filelock==3.20.0
-fsspec==2025.12.0
-Jinja2==3.1.6
-MarkupSafe==3.0.3
-mpmath==1.3.0
-networkx==3.6
-numpy==2.4.0rc1
-packaging==25.0
-pillow==12.0.0
-sympy==1.14.0
-torch==2.12.0.dev20260309+cpu
-torch-mlir==20260309.746
-torchvision==0.26.0.dev20260309+cpu
-typing_extensions==4.15.0
+numpy
+torch
+torchvision
+
+torch-mlir @ https://github.com/llvm/torch-mlir-release/releases/download/dev-wheels/torch_mlir-20260515.813-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl

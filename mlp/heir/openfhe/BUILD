@@ -11,7 +11,7 @@ heir_openfhe_lib(
     generated_lib_header = "mlp.inc.h",
     heir_opt_flags = [
         "--annotate-module=backend=openfhe scheme=bgv",
-        "--mlir-to-bgv=ciphertext-degree=8192",
+        "--torch-linalg-to-ckks=ciphertext-degree=8192",
         "--scheme-to-openfhe",
     ],
     mlir_src = "//mlp:mlp.mlir",
