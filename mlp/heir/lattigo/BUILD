@@ -6,10 +6,11 @@ heir_lattigo_lib(
     go_library_name = "mlp",
     heir_opt_flags = [
         "--annotate-module=backend=lattigo scheme=ckks",
-        "--torch-linalg-to-ckks=ciphertext-degree=8192",
+        "--torch-linalg-to-ckks=ciphertext-degree=1024",
         "--scheme-to-lattigo",
     ],
     mlir_src = "mlp.mlir",
+    split_preprocessing = False,
 )
 
 go_test(

@@ -1,10 +1,7 @@
 package mlp
 
 import (
-	"archive/zip"
 	"encoding/binary"
-	"fmt"
-	"io"
 	"math"
 	"os"
 	"testing"
@@ -16,36 +13,6 @@ const (
 	imagesPath = "../../data/t10k-images-idx3-ubyte"
 	labelsPath = "../../data/t10k-labels-idx1-ubyte"
 )
-
-func loadWeights(path string) ([][]float32, error) {
-	r, err := zip.OpenReader(path)
-	if err != nil {
-		return nil, err
-	}
-	defer r.Close()
-
-	weights := make([][]float32, 4)
-	for i := 0; i < 4; i++ {
-		f, err := r.Open(fmt.Sprintf("traced_model/data/%d", i))
-		if err != nil {
-			return nil, err
-		}
-		defer f.Close()
-
-		data, err := io.ReadAll(f)
-		if err != nil {
-			return nil, err
-		}
-
-		numFloats := len(data) / 4
-		weights[i] = make([]float32, numFloats)
-		for j := 0; j < numFloats; j++ {
-			bits := binary.LittleEndian.Uint32(data[j*4 : (j+1)*4])
-			weights[i][j] = math.Float32frombits(bits)
-		}
-	}
-	return weights, nil
-}
 
 func loadMNISTImages(path string) ([][]float64, error) {
 	f, err := os.Open(path)
@@ -104,11 +71,6 @@ func loadMNISTLabels(path string) ([]int, error) {
 }
 
 func TestMLP(t *testing.T) {
-	weights, err := loadWeights(modelPath)
-	if err != nil {
-		t.Fatalf("Failed to load weights: %v", err)
-	}
-
 	images, err := loadMNISTImages(imagesPath)
 	if err != nil {
 		t.Fatalf("Failed to load images: %v", err)
@@ -119,7 +81,7 @@ func TestMLP(t *testing.T) {
 		t.Fatalf("Failed to load labels: %v", err)
 	}
 
-	evaluator, params, encoder, encryptor, decryptor := mlp__configure()
+	btEv, ev, params, encoder, encryptor, decryptor := mlp__configure()
 
 	total := 3
 	correct := 0
@@ -133,14 +95,14 @@ func TestMLP(t *testing.T) {
 			inputFloat32[j] = float32(input[j])
 		}
 
-		ctInput := mlp__encrypt__arg4(evaluator, params, encoder, encryptor, inputFloat32)
+		ctInput := mlp__encrypt__arg0(ev, params, encoder, encryptor, inputFloat32)
 
 		startTime := time.Now()
-		resCt := mlp(evaluator, params, encoder, weights[0], weights[1], weights[2], weights[3], ctInput)
+		resCt := mlp(btEv, ev, params, encoder, ctInput)
 		duration := time.Since(startTime)
 		t.Logf("Sample %d took %v", i, duration)
 
-		resValues := mlp__decrypt__result0(evaluator, params, encoder, decryptor, resCt)
+		resValues := mlp__decrypt__result0(ev, params, encoder, decryptor, resCt)
 
 		maxVal := float32(-math.MaxFloat32)
 		maxIdx := -1
