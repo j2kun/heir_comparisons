@@ -1,20 +1,15 @@
 module(name = "heir_comparisons")
 
-bazel_dep(name = "rules_heir", version = "0.0.1")
-local_path_override(
-    module_name = "rules_heir",
-    path = "../rules_heir",
-)
+bazel_dep(name = "rules_heir", version = "0.0.3")
 
-ext = use_extension("@rules_heir//heir:extensions.bzl", "local_heir_repositories")
-
-# path to the directory containing heir-opt and heir-translate
-ext.config(path = "/usr/local/google/home/jkun/fhe/heir/bazel-bin/tools")
-use_repo(ext, "heir_local")
-
-register_toolchains(
-    "@heir_local//:heir_local_toolchain",
-)
+# ext = use_extension("@rules_heir//heir:extensions.bzl", "local_heir_repositories")
+# # path to the directory containing heir-opt and heir-translate
+# ext.config(path = "/usr/local/google/home/jkun/fhe/heir/bazel-bin/tools")
+# use_repo(ext, "heir_local")
+#
+# register_toolchains(
+#     "@heir_local//:heir_local_toolchain",
+# )
 
 bazel_dep(name = "abseil-py", version = "2.1.0")
 bazel_dep(name = "gazelle", version = "0.47.0")
