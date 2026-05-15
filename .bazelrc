@@ -4,7 +4,6 @@ common --copt=-fdiagnostics-color=always
 common --test_output=errors
 common --test_summary=terse
 common --enable_bzlmod
-common --enable_workspace
 
 # compilation_mode options below are `dbg` (debug symbols) `fastbuild`
 # (build as quickly as possible), and `opt` (turn on all optimizations)
@@ -13,9 +12,3 @@ common -c opt
 
 # prevents changes to PATH from causing a full rebuild
 common --incompatible_strict_action_env
-
-build --action_env=CC=clang
-build --action_env=CXX=clang++
-build --host_action_env=CC=clang
-build --host_action_env=CXX=clang++
-build --linkopt="-fuse-ld=lld"

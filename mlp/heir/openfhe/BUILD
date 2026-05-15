@@ -1,10 +1,10 @@
-load("//bazel/openfhe:copts.bzl", "OPENFHE_LINKOPTS", "OPENMP_COPTS")
 load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("@rules_heir//heir:heir_opt.bzl", "heir_opt")
 load("@rules_heir//heir:heir_translate.bzl", "heir_translate")
 load("@rules_python//python:py_test.bzl", "py_test")
+load("//bazel/openfhe:copts.bzl", "OPENFHE_LINKOPTS", "OPENMP_COPTS")
 
 # Optimize and generate HEIR's OpenFHE dialect IR
 heir_opt(
@@ -45,15 +45,16 @@ cc_library(
     name = "mlp_compiled_cc_lib",
     srcs = ["mlp.inc.cc"],
     hdrs = ["mlp.inc.h"],
-    deps = ["@openfhe//:pke"],
     copts = OPENMP_COPTS + ["-O0"],
     linkopts = OPENFHE_LINKOPTS,
+    deps = ["@openfhe//:pke"],
 )
 
 # Codegen for OpenFHE C++ pybindings
 heir_translate(
     name = "mlp_translate_pybind",
     src = "mlp.openfhe.mlir",
+    generated_filename = "mlp_openfhe_bindings.cpp",
     passes = [
         "--openfhe-include-type=source-relative",
         "--emit-openfhe-pke-pybind",
@@ -63,7 +64,6 @@ heir_translate(
         # exposed to `import`
         "--pybind-module-name=mlp_translate_pybind",
     ],
-    generated_filename = "mlp_openfhe_bindings.cpp",
 )
 
 # Build the python extension module
@@ -71,22 +71,9 @@ pybind_extension(
     name = "mlp_pybind",
     srcs = ["mlp_openfhe_bindings.cpp"],
     deps = [
-        ":mlp_translate_pybind",
         ":mlp_compiled_cc_lib",
+        ":mlp_translate_pybind",
         "@openfhe//:pke",
-    ],
-)
-
-# HEIR OpenFHE interpreter shim, so that python code can
-# invoke the interpreted mode instead of the compiled mode.
-cc_library(
-    name = "interpreter_shim",
-    srcs = ["interpreter_shim.cpp"],
-    deps = [
-        "@llvm-project//mlir:IR",
-        "@llvm-project//mlir:Parser",
-        "@openfhe//:pke",
-        "@heir//lib/Target/OpenFhePke:Interpreter",
     ],
 )
 
@@ -95,6 +82,11 @@ py_test(
     name = "mlp_compiled_test",
     size = "enormous",
     srcs = ["mlp_compiled_test.py"],
+    data = [
+        "//mlp/data:t10k-images-idx3-ubyte",
+        "//mlp/data:t10k-labels-idx1-ubyte",
+        "//mlp/data:traced_model.pt",
+    ],
     main = "mlp_compiled_test.py",
     tags = [
         "requires-mem:28g",
@@ -104,10 +96,5 @@ py_test(
         "@abseil-py//absl/testing:absltest",
         "@hc_pypi//numpy",
         "@hc_pypi//torch",
-    ],
-    data = [
-        "//mlp/data:t10k-images-idx3-ubyte",
-        "//mlp/data:t10k-labels-idx1-ubyte",
-        "//mlp/data:traced_model.pt",
     ],
 )

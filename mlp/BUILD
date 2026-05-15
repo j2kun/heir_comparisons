@@ -1,4 +1,3 @@
-load("//bazel/openfhe:copts.bzl", "OPENFHE_LINKOPTS", "OPENMP_COPTS")
 load("@hc_pypi//:requirements.bzl", "requirement")
 load("@pybind11_bazel//:build_defs.bzl", "pybind_extension")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
@@ -8,6 +7,7 @@ load("@rules_heir//heir:heir_translate.bzl", "heir_translate")
 load("@rules_python//python:py_binary.bzl", "py_binary")
 load("@rules_python//python:py_library.bzl", "py_library")
 load("@rules_python//python:py_test.bzl", "py_test")
+load("//bazel/openfhe:copts.bzl", "OPENFHE_LINKOPTS", "OPENMP_COPTS")
 
 package(
     default_visibility = ["//visibility:public"],
@@ -84,15 +84,16 @@ cc_library(
     name = "mlp_openfhe_heir_cc_lib",
     srcs = ["mlp.inc.cc"],
     hdrs = ["mlp.inc.h"],
-    deps = ["@openfhe//:pke"],
     copts = OPENMP_COPTS + ["-O0"],
     linkopts = OPENFHE_LINKOPTS,
+    deps = ["@openfhe//:pke"],
 )
 
 # Codegen for OpenFHE C++ pybindings
 heir_translate(
     name = "mlp_openfhe.heir_translate_pybind",
     src = "mlp.openfhe.mlir",
+    generated_filename = "mlp_openfhe_bindings.cpp",
     passes = [
         "--openfhe-include-type=source-relative",
         "--emit-openfhe-pke-pybind",
@@ -102,7 +103,6 @@ heir_translate(
         # exposed to `import`
         "--pybind-module-name=mlp_translate_pybind",
     ],
-    generated_filename = "mlp_openfhe_bindings.cpp",
 )
 
 # Build the python extension module
@@ -116,25 +116,16 @@ pybind_extension(
     ],
 )
 
-# HEIR OpenFHE interpreter shim, so that python code can
-# invoke the interpreted mode instead of the compiled mode.
-cc_library(
-    name = "mlp_interpreter_shim",
-    srcs = ["mlp_interpreter_shim.cpp"],
-    deps = [
-        ":mlp_openfhe_heir_cc_lib",
-        "@llvm-project//mlir:IR",
-        "@llvm-project//mlir:Parser",
-        "@openfhe//:pke",
-    ],
-)
-
-
 # Test and time it
 py_test(
     name = "mlp_openfhe_heir_test",
     size = "enormous",
     srcs = ["mlp_heir_test.py"],
+    data = [
+        "//mlp/data:t10k-images-idx3-ubyte",
+        "//mlp/data:t10k-labels-idx1-ubyte",
+        "//mlp/data:traced_model.pt",
+    ],
     main = "mlp_heir_test.py",
     tags = [
         "requires-mem:28g",
@@ -144,10 +135,5 @@ py_test(
         "@abseil-py//absl/testing:absltest",
         "@hc_pypi//numpy",
         "@hc_pypi//torch",
-    ],
-    data = [
-        "//mlp/data:t10k-images-idx3-ubyte",
-        "//mlp/data:t10k-labels-idx1-ubyte",
-        "//mlp/data:traced_model.pt",
     ],
 )
