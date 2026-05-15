@@ -1,10 +1,7 @@
-// This is the raw MLIR exported by torch-mlir. It still needs to be processed
-// as appropriate to the backend.
-
 #map = affine_map<(d0, d1) -> (d0, d1)>
 #map1 = affine_map<(d0, d1) -> (d1)>
 module {
-  func.func @main(%arg0: tensor<1x1x28x28xf32>) -> tensor<1x10xf32> {
+  func.func @mlp(%arg0: tensor<1x1x28x28xf32> {secret.secret}) -> tensor<1x10xf32> {
     %cst = arith.constant 0.000000e+00 : f32
     %cst_0 = arith.constant dense_resource<torch_tensor_10_torch.float32> : tensor<10xf32>
     %cst_1 = arith.constant dense_resource<torch_tensor_10_512_torch.float32> : tensor<10x512xf32>

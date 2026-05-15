@@ -14,20 +14,20 @@ heir_openfhe_lib(
         "--torch-linalg-to-ckks=ciphertext-degree=8192",
         "--scheme-to-openfhe",
     ],
-    mlir_src = "//mlp:mlp.mlir",
+    mlir_src = "mlp.mlir",
+    pybind_target_name = "mlp_pybind",
 )
 
-# Test and time it
 py_test(
-    name = "mlp_compiled_test",
+    name = "mlp_test",
     size = "enormous",
-    srcs = ["mlp_compiled_test.py"],
+    srcs = ["mlp_test.py"],
     data = [
         "//mlp/data:t10k-images-idx3-ubyte",
         "//mlp/data:t10k-labels-idx1-ubyte",
         "//mlp/data:traced_model.pt",
     ],
-    main = "mlp_compiled_test.py",
+    main = "mlp_test.py",
     tags = [
         "requires-mem:28g",
     ],
