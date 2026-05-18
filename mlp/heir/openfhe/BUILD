@@ -3,7 +3,6 @@ load("@rules_cc//cc:cc_library.bzl", "cc_library")
 load("@rules_cc//cc:cc_test.bzl", "cc_test")
 load("@rules_heir//heir:openfhe.bzl", "heir_openfhe_lib")
 load("@rules_python//python:py_test.bzl", "py_test")
-load("//bazel/openfhe:copts.bzl", "OPENFHE_LINKOPTS", "OPENMP_COPTS")
 
 heir_openfhe_lib(
     name = "mlp",
