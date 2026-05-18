@@ -8,10 +8,10 @@ bazel_dep(name = "llvm", version = "0.7.8")
 register_toolchains("@llvm//:all")
 
 bazel_dep(name = "rules_heir", version = "0.0.5")
-local_path_override(
-    module_name = "rules_heir",
-    path = "../rules_heir",
-)
+# local_path_override(
+#     module_name = "rules_heir",
+#     path = "../rules_heir",
+# )
 # ext = use_extension("@rules_heir//heir:extensions.bzl", "local_heir_repositories")
 # # path to the directory containing heir-opt and heir-translate
 # ext.config(path = "/usr/local/google/home/jkun/fhe/heir/bazel-bin/tools")
